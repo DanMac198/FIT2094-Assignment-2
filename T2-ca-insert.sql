@@ -1,8 +1,8 @@
 /*****PLEASE ENTER YOUR DETAILS BELOW*****/
 --T2-ca-insert.sql
 
---Student ID:
---Student Name:
+--Student ID: 34021396
+--Student Name: Daniel Ross Mackay
 
 /*
 Indicate if AI was used (Yes/No): Yes

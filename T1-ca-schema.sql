@@ -1,8 +1,8 @@
 --*****PLEASE ENTER YOUR DETAILS BELOW*****
 --T1-ca-schema.sql
 
---Student ID:
---Student Name:
+--Student ID: 34021396
+--Student Name: Daniel Ross Mackay
 
 /*
     -- Submission Declaration - must not be removed - removal will result in no marks being awarded --
