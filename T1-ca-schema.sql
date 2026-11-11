@@ -29,7 +29,7 @@ CREATE TABLE bin (
     bin_supply_date    DATE NOT NULL,
     bin_replace_reason CHAR(1),
     prop_id            NUMBER(6) NOT NULL,
-    wt_id              NUMBER(3) NOT NULL,  
+    wt_id              CHAR(2) NOT NULL,  
     bt_size            NUMBER(3) NOT NULL,  
     prev_bin_id        NUMBER(8)
 );
@@ -60,10 +60,9 @@ COMMENT ON COLUMN bin.prev_bin_id IS
  
 ALTER TABLE bin ADD CONSTRAINT bin_pk PRIMARY KEY ( bin_id );
  
-ALTER TABLE bin ADD CONSTRAINT bin_rfid_uq UNIQUE ( bin_rfid );
+ALTER TABLE bin ADD CONSTRAINT bin_nk UNIQUE ( bin_rfid );
  
--- a bin can be replaced by at most one bin (1:1 replaces relationship)
-ALTER TABLE bin ADD CONSTRAINT bin_prev_bin_uq UNIQUE ( prev_bin_id );
+ALTER TABLE bin ADD CONSTRAINT bin_prev_bin_nk UNIQUE ( prev_bin_id );
  
 ALTER TABLE bin
     ADD CONSTRAINT bin_replace_reason_chk
@@ -76,7 +75,7 @@ CREATE TABLE bin_collect (
     collect_date  DATE NOT NULL,
     bc_kgs        NUMBER(3, 1),
     bc_overweight CHAR(1) NOT NULL,
-    cont_waste_id NUMBER(6) NOT NULL   
+    cont_waste_id NUMBER(4) NOT NULL   
 );
  
 COMMENT ON COLUMN bin_collect.bin_id IS
@@ -102,8 +101,56 @@ ALTER TABLE bin_collect
 
 
 -- PROPERTY
-
+CREATE TABLE property (
+    prop_id      NUMBER(6) NOT NULL,
+    prop_address VARCHAR2(50) NOT NULL,
+    auth_name    VARCHAR2(80) NOT NULL
+);
+ 
+COMMENT ON COLUMN property.prop_id IS
+    'Property ID';
+ 
+COMMENT ON COLUMN property.prop_address IS
+    'Property Address (includes street no, street name, suburb)';
+ 
+COMMENT ON COLUMN property.auth_name IS
+    'Name of the local authority the property is located in';
+ 
+ALTER TABLE property ADD CONSTRAINT property_pk PRIMARY KEY ( prop_id );
+ 
+ALTER TABLE property ADD CONSTRAINT property_nk UNIQUE ( prop_address,
+                                                         auth_name );
 
 -- Add all missing FK Constraints below here
 
-
+ALTER TABLE property
+    ADD CONSTRAINT authority_property_fk FOREIGN KEY ( auth_name )
+        REFERENCES authority ( auth_name );
+ 
+ALTER TABLE bin
+    ADD CONSTRAINT property_bin_fk FOREIGN KEY ( prop_id )
+        REFERENCES property ( prop_id );
+ 
+-- composite FK: a bin's type is identified by waste type + size
+ALTER TABLE bin
+    ADD CONSTRAINT bin_type_bin_fk FOREIGN KEY ( wt_id,
+                                                 bt_size )
+        REFERENCES bin_type ( wt_id,
+                              bt_size );
+ 
+-- recursive FK: the bin this bin replaces
+ALTER TABLE bin
+    ADD CONSTRAINT bin_bin_fk FOREIGN KEY ( prev_bin_id )
+        REFERENCES bin ( bin_id );
+ 
+ALTER TABLE bin_collect
+    ADD CONSTRAINT bin_bin_collect_fk FOREIGN KEY ( bin_id )
+        REFERENCES bin ( bin_id );
+ 
+-- composite FK: collect_date is shared between the PK and this FK
+ALTER TABLE bin_collect
+    ADD CONSTRAINT collection_bin_collect_fk FOREIGN KEY ( cont_waste_id,
+                                                           collect_date )
+        REFERENCES collection ( cont_waste_id,
+                                collect_date );
+ 
