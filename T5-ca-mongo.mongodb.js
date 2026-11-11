@@ -41,6 +41,22 @@ db.property_bins.find();
 // ENSURE that your query is formatted and has a semicolon
 // (;) at the end of this answer
 
+// Properties with more than 3 supplied bins (of any waste type) 
+db.property_bins.find(
+    {
+        "bin_stats.number_of_suppliedbins": { $gt: 3 },
+        $or: [
+            { prop_fulladdress: { $regex: /Shire of Yarra Ranges$/ } },
+            { prop_fulladdress: { $regex: /Shire of Mornington Peninsula$/ } }
+        ]
+    },
+    {
+        prop_fulladdress: 1,
+        "bin_stats.number_of_suppliedbins": 1,
+        "bins.bin_rfid": 1,
+        "bins.supplied_date": 1
+    }
+);
 
 
 // (d)
