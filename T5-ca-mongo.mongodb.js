@@ -24,13 +24,17 @@
 // (;) at the end of this answer
 
 // Drop collection
-
+db.property_bins.drop();
 
 // Create collection and insert documents
+db.createCollection("property_bins");
 
+db.property_bins.insertMany([
+ 
+]);
 
 // List all documents you added
-
+db.property_bins.find();
 
 // (c)
 // PLEASE PLACE REQUIRED MONGODB COMMAND/S FOR THIS PART HERE
