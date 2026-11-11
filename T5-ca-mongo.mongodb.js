@@ -1,8 +1,8 @@
 // *****PLEASE ENTER YOUR DETAILS BELOW*****
 // T5-ca-mongo.mongodb.js
 
-// Student ID:
-// Student Name:
+// Student ID: 34021396
+// Student Name: Daniel Ross Mackay 
 
 // ===================================================================================
 // DO NOT modify or remove any of the comments below (items marked with //)
